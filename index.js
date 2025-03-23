@@ -2,7 +2,6 @@
 let currentPage = 1;
 const options = { method: "GET", headers: { accept: "application/json" } };
 
-const dropdown = document.getElementById("books-dropdown");
 const bookWrapper = document.querySelector(".book");
 const loader = document.querySelector(".book-loader");
 const booksContainer = document.querySelector(".books");
@@ -10,6 +9,8 @@ const sort = document.getElementById("books-dropdown-sort");
 let totalPage = 2;
 const prev = document.getElementById("prev");
 const next = document.getElementById("next");
+const dropdown = document.getElementById("books-dropdown");
+console.log(dropdown);
 
 console.log(sort);
 let books = [];
@@ -29,7 +30,7 @@ const fetchBooks = async () => {
     prev.disabled = currentPage === 1;
     next.disabled = currentPage === totalPage;
   } catch (error) {
-    console.error("Failed to fetch books:", error);
+    console.error("Failed", error);
     loader.innerHTML = "Failed to load books.";
   }
 };
@@ -68,87 +69,121 @@ const addBooks = (books) => {
     booksContainer.insertAdjacentHTML("beforeend", bookHTML);
   });
 };
+console.log(dropdown);
 
-dropdown.addEventListener("change", (e) => {
-  bookWrapper.classList.remove("list-view", "grid-view");
-  bookWrapper.classList.add(`${e.target.value}-view`);
-});
+if (dropdown) {
+  dropdown.addEventListener("change", (e) => {
+    console.log(e.target.value);
+    bookWrapper.classList.remove("list-view", "grid-view");
+    bookWrapper.classList.add(`${e.target.value}-view`);
+  });
+}
 
 //sorting books on title and date
-sort.addEventListener("change", (e) => {
-  console.log(e.target.value);
-  const sortedBooks = books.sort((a, b) => {
-    if (e.target.value === "title") {
-      return a.volumeInfo.title.localeCompare(b.volumeInfo.title);
-    } else {
-      return (
-        new Date(a.volumeInfo.publishedDate) -
-        new Date(b.volumeInfo.publishedDate)
-      );
-    }
-  });
+if (sort) {
+  sort.addEventListener("change", (e) => {
+    console.log(e.target.value);
+    const sortedBooks = books.sort((a, b) => {
+      if (e.target.value === "title") {
+        return a.volumeInfo.title.localeCompare(b.volumeInfo.title);
+      } else {
+        return (
+          new Date(a.volumeInfo.publishedDate) -
+          new Date(b.volumeInfo.publishedDate)
+        );
+      }
+    });
 
-  addBooks(sortedBooks);
-});
+    addBooks(sortedBooks);
+  });
+}
 
 //search books on filter
 
 const inputBox = document.querySelector("input");
 let inputValues = "";
-inputBox.addEventListener("input", (e) => {
-  const search = e.target.value.trim().toLowerCase();
-  inputValues = search;
 
-  const filteredBooks = books.filter((book) => {
-    return book.volumeInfo.title.toLowerCase().includes(search);
+if (inputBox) {
+  inputBox.addEventListener("input", (e) => {
+    const search = e.target.value.trim().toLowerCase();
+    inputValues = search;
+
+    const filteredBooks = books.filter((book) => {
+      return book.volumeInfo.title.toLowerCase().includes(search);
+    });
+
+    if (search.length === 0) {
+      const divHeader = document.querySelector(".book-null");
+      divHeader.innerHTML = "";
+
+      prev.disabled = true;
+      next.disabled = true;
+    }
+
+    addBooks(filteredBooks);
   });
-
-  if (search.length === 0) {
-    const divHeader = document.querySelector(".book-null");
-    divHeader.innerHTML = "";
-  }
-
-  addBooks(filteredBooks);
-});
+}
 
 //added pagiantion
 
-prev.addEventListener("click", () => {
-  if (currentPage > 1 && currentPage <= totalPage) {
-    currentPage--;
-    fetchBooks();
-  }
-});
+if (prev) {
+  prev.addEventListener("click", () => {
+    if (currentPage > 1 && currentPage <= totalPage) {
+      currentPage--;
+      fetchBooks();
+    }
+  });
+}
 
-next.addEventListener("click", () => {
-  if (currentPage < totalPage && currentPage >= 1) {
-    currentPage++;
-    fetchBooks();
-  }
-});
+if (next) {
+  next.addEventListener("click", () => {
+    if (currentPage < totalPage && currentPage >= 1) {
+      currentPage++;
+      fetchBooks();
+    }
+  });
+}
 
 fetchBooks();
 
 const fetchBookById = async (id) => {
-  const url = "https://api.freeapi.app/api/v1/public/books/39";
+  const url = `https://api.freeapi.app/api/v1/public/books/${id}`;
   const options = { method: "GET", headers: { accept: "application/json" } };
 
   try {
     const response = await fetch(url, options);
-    const data = await response.json();
-    console.log(data);
+    const result = await response.json();
+    const data = result.data;
+
+    // Fill in the HTML elements
+    document.getElementById("book-image").src =
+      data.volumeInfo.imageLinks.thumbnail;
+    document.getElementById("book-image").alt = data.volumeInfo.title;
+
+    document.getElementById("book-title").textContent = data.volumeInfo.title;
+    document.getElementById("book-author").textContent =
+      data.volumeInfo.authors?.join(", ") || "Unknown";
+    document.getElementById("book-publisher").textContent =
+      data.volumeInfo.publisher || "Unknown";
+    document.getElementById("book-date").textContent =
+      data.volumeInfo.publishedDate || "N/A";
+    document.getElementById("book-description").textContent =
+      data.volumeInfo.description || "No description available.";
+    document.getElementById("book-link").href = data.volumeInfo.infoLink;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching book details:", error);
   }
 };
 
 //added event listener to get book details
 
-booksContainer.addEventListener("click", (e) => {
-  const bookItem = e.target.closest(".books-item");
-  console.log(bookItem);
-  if (bookItem) {
-    const bookId = bookItem.dataset.id;
-    fetchBookById(bookId);
-  }
-});
+if (booksContainer) {
+  booksContainer.addEventListener("click", (e) => {
+    const bookItem = e.target.closest(".books-item");
+    console.log(bookItem);
+    if (bookItem) {
+      const bookId = bookItem.dataset.id;
+      fetchBookById(bookId);
+    }
+  });
+}

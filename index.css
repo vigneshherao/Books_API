@@ -129,4 +129,64 @@ button:disabled {
 
 .books {
     cursor: pointer;
+    list-style: none;
+}
+
+.book-detail-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px 20px;
+}
+
+.book-title {
+    text-align: center;
+    color: rgb(193, 50, 50);
+    text-shadow: 2px 2px 5px black;
+    margin-bottom: 30px;
+}
+
+.book-detail-card {
+    display: flex;
+    gap: 20px;
+    background-color: bisque;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.book-img {
+    width: 200px;
+    height: auto;
+    border-radius: 5px;
+    border: 1px solid #000;
+}
+
+.book-info {
+    flex: 1;
+    min-width: 250px;
+}
+
+.book-info p {
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+.book-desc {
+    margin-top: 15px;
+}
+
+.book-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: red;
+    color: bisque;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.book-link:hover {
+    background-color: darkred;
 }
