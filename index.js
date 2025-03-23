@@ -7,6 +7,9 @@ const dropdown = document.getElementById("books-dropdown");
 const bookWrapper = document.querySelector(".book");
 const loader = document.querySelector(".book-loader");
 const booksContainer = document.querySelector(".books");
+const sort = document.getElementById("books-dropdown-sort");
+
+console.log(sort);
 let books = [];
 const fetchBooks = async () => {
   try {
@@ -24,6 +27,11 @@ const fetchBooks = async () => {
 };
 
 const addBooks = (books) => {
+  if (!books || books.length === 0) {
+    const divHeader = document.querySelector(".book-null");
+    divHeader.innerHTML = "No books found";
+  }
+
   booksContainer.innerHTML = "";
 
   books.forEach((book) => {
@@ -57,6 +65,23 @@ dropdown.addEventListener("change", (e) => {
   bookWrapper.classList.add(`${e.target.value}-view`);
 });
 
+//sorting books on title and date
+sort.addEventListener("change", (e) => {
+  console.log(e.target.value);
+  const sortedBooks = books.sort((a, b) => {
+    if (e.target.value === "title") {
+      return a.volumeInfo.title.localeCompare(b.volumeInfo.title);
+    } else {
+      return (
+        new Date(a.volumeInfo.publishedDate) -
+        new Date(b.volumeInfo.publishedDate)
+      );
+    }
+  });
+
+  addBooks(sortedBooks);
+});
+
 //search books on filter
 
 const inputBox = document.querySelector("input");
@@ -68,6 +93,11 @@ inputBox.addEventListener("input", (e) => {
   const filteredBooks = books.filter((book) => {
     return book.volumeInfo.title.toLowerCase().includes(search);
   });
+
+  if (search.length === 0) {
+    const divHeader = document.querySelector(".book-null");
+    divHeader.innerHTML = "";
+  }
 
   addBooks(filteredBooks);
 });

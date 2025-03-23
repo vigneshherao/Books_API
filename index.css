@@ -92,3 +92,10 @@ select {
     display: block;
     text-align: center;
 }
+
+.book-null {
+    text-align: center;
+    color: red;
+    font-size: 20px;
+    margin-top: 20px;
+}
