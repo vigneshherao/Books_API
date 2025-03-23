@@ -52,8 +52,9 @@ const addBooks = (books) => {
       volumeInfo.imageLinks?.thumbnail ||
       "https://images.vexels.com/media/users/3/256355/isolated/preview/98e3253d2ce2e2212723519b367a347c-closed-book-cartoon.png";
 
+    const bookId = book.id || book._id || "unknown";
     const bookHTML = `
-        <div class="books-item">
+        <div class="books-item" data-id="${bookId}">
           <img src="${img}" alt="${title}" />
           <div>
             <h3>${title}</h3>
@@ -127,3 +128,27 @@ next.addEventListener("click", () => {
 });
 
 fetchBooks();
+
+const fetchBookById = async (id) => {
+  const url = "https://api.freeapi.app/api/v1/public/books/39";
+  const options = { method: "GET", headers: { accept: "application/json" } };
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//added event listener to get book details
+
+booksContainer.addEventListener("click", (e) => {
+  const bookItem = e.target.closest(".books-item");
+  console.log(bookItem);
+  if (bookItem) {
+    const bookId = bookItem.dataset.id;
+    fetchBookById(bookId);
+  }
+});
