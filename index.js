@@ -1,25 +1,26 @@
 //fetch books
 const url =
   "https://api.freeapi.app/api/v1/public/books?page=1&limit=10&inc=kind%252Cid%252Cetag%252CvolumeInfo&query=tech";
-
 const options = { method: "GET", headers: { accept: "application/json" } };
 
+const dropdown = document.getElementById("books-dropdown");
+const bookWrapper = document.querySelector(".book");
 const loader = document.querySelector(".book-loader");
+const booksContainer = document.querySelector(".books");
 
 const fetchBooks = async () => {
   try {
+    loader.style.display = "flex";
     const response = await fetch(url, options);
     const data = await response.json();
     const books = data?.data?.data;
 
-    const container = document.querySelector(".book");
-    container.innerHTML = "";
+    booksContainer.innerHTML = "";
 
     books.forEach((book) => {
       const volumeInfo = book.volumeInfo;
-
       const title = volumeInfo.title || "NA";
-      const author = volumeInfo.authors ? volumeInfo.authors : "NA";
+      const author = volumeInfo.authors?.join(", ") || "NA";
       const publisher = volumeInfo.publisher || "NA";
       const publishedDate = volumeInfo.publishedDate || "NA";
       const img =
@@ -29,20 +30,28 @@ const fetchBooks = async () => {
       const bookHTML = `
         <div class="books-item">
           <img src="${img}" alt="${title}" />
-          <h3>${title}</h3>
-          <p><strong>Author:</strong> ${author}</p>
-          <p><strong>Publisher:</strong> ${publisher}</p>
-          <p><strong>Published:</strong> ${publishedDate}</p>
+          <div>
+            <h3>${title}</h3>
+            <p><strong>Author:</strong> ${author}</p>
+            <p><strong>Publisher:</strong> ${publisher}</p>
+            <p><strong>Published:</strong> ${publishedDate}</p>
+          </div>
         </div>
       `;
 
-      loader.innerHTML = "";
-
-      container.insertAdjacentHTML("beforeend", bookHTML);
+      booksContainer.insertAdjacentHTML("beforeend", bookHTML);
     });
+
+    loader.style.display = "none";
   } catch (error) {
-    console.error("no books:", error);
+    console.error("Failed to fetch books:", error);
+    loader.innerHTML = "Failed to load books.";
   }
 };
+
+dropdown.addEventListener("change", (e) => {
+  bookWrapper.classList.remove("list-view", "grid-view");
+  bookWrapper.classList.add(`${e.target.value}-view`);
+});
 
 fetchBooks();

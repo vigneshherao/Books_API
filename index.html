@@ -2,42 +2,39 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="index.css" />
     <title>Books API</title>
 </head>
 
 <body>
-    <h2 id="header">BOOKS API'S</h2>
+    <h2 id="header">BOOKS API</h2>
 
     <div class="books-container">
         <div class="books-options">
             <div class="books-options-items">
                 <select name="books" id="books-dropdown">
-                    <option value="1">List</option>
-                    <option value="2">Grid</option>
+                    <option value="list">List</option>
+                    <option value="grid">Grid</option>
                 </select>
                 <select name="sort" id="books-dropdown-sort">
-                    <option value="1">Sort By Title</option>
-                    <option value="2">Sort By Date</option>
+                    <option value="title">Sort By Title</option>
+                    <option value="date">Sort By Date</option>
                 </select>
-                <input type="text" id="search" placeholder="Search">
+                <input type="text" id="search" placeholder="Search" />
             </div>
-            <div class="books-items">
-                <div class="book-loader">FETCHING THE BOOKS <img id="img-loader" src="https://i.gifer.com/ZKZg.gif"
-                        alt="loader" />
+
+            <div class="book list-view">
+                <div class="book-loader">
+                    FETCHING THE BOOKS
+                    <img id="img-loader" src="https://i.gifer.com/ZKZg.gif" alt="loader" />
                 </div>
-                <div class="book"></div>
-
-
+                <div class="books"></div>
             </div>
-
         </div>
-
     </div>
 
-    </div>
     <script src="index.js"></script>
 </body>
 
