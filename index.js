@@ -1,6 +1,5 @@
 //fetch books
-const url =
-  "https://api.freeapi.app/api/v1/public/books?page=1&limit=10&inc=kind%252Cid%252Cetag%252CvolumeInfo&query=tech";
+let currentPage = 1;
 const options = { method: "GET", headers: { accept: "application/json" } };
 
 const dropdown = document.getElementById("books-dropdown");
@@ -8,13 +7,16 @@ const bookWrapper = document.querySelector(".book");
 const loader = document.querySelector(".book-loader");
 const booksContainer = document.querySelector(".books");
 const sort = document.getElementById("books-dropdown-sort");
-let totalPage = 0;
+let totalPage = 2;
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
 
 console.log(sort);
 let books = [];
 const fetchBooks = async () => {
   try {
     loader.style.display = "flex";
+    const url = `https://api.freeapi.app/api/v1/public/books?page=${currentPage}&limit=10&inc=kind%252Cid%252Cetag%252CvolumeInfo&query=tech`;
     const response = await fetch(url, options);
     const data = await response.json();
     totalPage = data?.data?.totalPages;
@@ -23,6 +25,9 @@ const fetchBooks = async () => {
     const listofBooks = data?.data?.data;
     addBooks(listofBooks);
     loader.style.display = "none";
+
+    prev.disabled = currentPage === 1;
+    next.disabled = currentPage === totalPage;
   } catch (error) {
     console.error("Failed to fetch books:", error);
     loader.innerHTML = "Failed to load books.";
@@ -103,6 +108,22 @@ inputBox.addEventListener("input", (e) => {
   }
 
   addBooks(filteredBooks);
+});
+
+//added pagiantion
+
+prev.addEventListener("click", () => {
+  if (currentPage > 1 && currentPage <= totalPage) {
+    currentPage--;
+    fetchBooks();
+  }
+});
+
+next.addEventListener("click", () => {
+  if (currentPage < totalPage && currentPage >= 1) {
+    currentPage++;
+    fetchBooks();
+  }
 });
 
 fetchBooks();

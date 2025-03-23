@@ -121,3 +121,8 @@ select {
     background-color: red;
     color: bisque;
 }
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
