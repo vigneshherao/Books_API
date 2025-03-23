@@ -8,6 +8,7 @@ const bookWrapper = document.querySelector(".book");
 const loader = document.querySelector(".book-loader");
 const booksContainer = document.querySelector(".books");
 const sort = document.getElementById("books-dropdown-sort");
+let totalPage = 0;
 
 console.log(sort);
 let books = [];
@@ -16,7 +17,9 @@ const fetchBooks = async () => {
     loader.style.display = "flex";
     const response = await fetch(url, options);
     const data = await response.json();
+    totalPage = data?.data?.totalPages;
     books = data?.data?.data;
+
     const listofBooks = data?.data?.data;
     addBooks(listofBooks);
     loader.style.display = "none";
